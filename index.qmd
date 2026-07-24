@@ -6,6 +6,8 @@ date: "2026-07-23"
 jupyter: python3
 ---
 
+I started this expecting to show that crowded momentum trades reverse — that once too many participants are already positioned, the winners roll over and the next move is the unwind. The data said no. High-turnover winners outperformed at every horizon, the exact opposite of the hypothesis. So I did not keep the conclusion and drop the question; I kept the question and interrogated the test. Turnover is unsigned, so I signed the volume. That returned a null, but the null was about the sample, not the signal — a single bull market has almost no divergence to measure. So I moved to a market that does. Each phase here was provoked by the previous one's failure, not by a fresh guess. What I actually learned is procedural: research is less about being right the first time than about being wrong well — knowing which part of a broken test to fix next.
+
 ::: {.callout-note appearance="simple" icon="false"}
 **Abstract.** We test whether trading-volume information predicts the cross-section of momentum returns, and whether any such effect depends on the timeframe at which it is measured. The study proceeds in three phases, each provoked by the failure of the last. **Phase 1** asks whether high-turnover ("crowded") momentum stocks in the S&P 500 subsequently underperform; they do not — high-turnover winners outperform at every horizon, contradicting the crowding-reversal hypothesis. **Phase 2** refines the signal from unsigned turnover to price-signed volume (on-balance volume) to separate accumulation from distribution, but returns a null result driven by a sample — a single equity bull market — in which genuine price/flow divergence almost never occurs (2.7% of observations). **Phase 3** moves to a multi-regime cryptocurrency panel (60 persistently-liquid Binance USDT pairs, 2021–2026), replaces the OBV proxy with true taker-flow CVD, and treats timeframe as the object of study — sweeping the identical test across monthly, weekly, daily, 4-hour, and 1-hour bars. Flow-confirmed momentum outperforms flow-divergent momentum at the weekly and daily scale (t up to 3.9) and is statistically indistinguishable from zero intraday. We read this as suggestive rather than conclusive: the largest test statistics arise at overlapping horizons that inflate significance, and the cleanest non-overlapping estimates fall just short of conventional thresholds. The contribution is as much methodological as empirical — a worked example of iterative hypothesis refinement, disciplined treatment of null results, and the data-engineering reality of point-in-time cross-sectional research.
 :::
@@ -95,6 +97,10 @@ Markdown(df.round(4).to_markdown(index=False))
 
 *Table 1. Phase 1 — high − low turnover spread, S&P 500 momentum winners. High-turnover winners lead at every horizon; the spread compounds rather than reverses. Significance untested at this stage (see Limitations).*
 
+::: {.callout-note title="Why Phase 2 happened"}
+Phase 1 rejected the crowding story, but I did not trust the rejection as an answer — turnover is *unsigned*. Every executed share has a buyer and a seller; turnover counts the shares, not who was the aggressor. Two winners with identical turnover can be in opposite situations, one climbing on real accumulation, the other climbing while early holders distribute into strength, and turnover cannot tell them apart. That blind spot is the whole reason I signed the volume next: if the crowding idea has any content, it lives in the *direction* of the flow, not its size. OBV was the crude fix — a whole month collapsed to a ±1 per day — but it was the fix the equity data would support.
+:::
+
 ### Phase 2 — a null, and why
 
 Signing the volume with OBV and re-running the identical split yields no reliable effect: every t-statistic sits below one in magnitude (Table 2). But the informative number is the diagnostic, not the t: only **2.7%** of winner-months exhibited strictly negative flow. In a single sustained bull market, genuine price/flow divergence barely occurs — so the median split was really contrasting "strongly confirmed" against "weakly confirmed," not confirmed against divergent. The null is therefore uninterpretable in the strong sense: it does not show that confirmation is irrelevant, only that this sample could not test it. That realization, not the t-statistics, is what motivates Phase 3.
@@ -106,6 +112,10 @@ Markdown(df.round(4).to_markdown(index=False))
 ```
 
 *Table 2. Phase 2 — confirmed − divergent spread (OBV), S&P 500 momentum winners. With divergence occurring in only 2.7% of winner-months, the test had almost nothing to measure. The problem is the sample, not the signal.*
+
+::: {.callout-note title="Why Phase 3 happened"}
+The 2.7% divergence rate is the number that mattered, not the t-statistics. If genuine price/flow disagreement almost never occurs, the median split is contrasting "strongly confirmed" against "weakly confirmed" — it is not testing the hypothesis at all. So the null was a symptom of the sample, and three fixes followed from that reading. First, move to a multi-regime market where divergence actually happens: crypto, spanning the 2021 top, the 2022 bear, and the recovery. Furthermore, replace the OBV proxy with real CVD — taker buy minus taker sell per bar — so the signal measures who was the aggressor rather than inferring it from where the bar closed. Moreover, stop assuming a horizon: promote timeframe from a fixed assumption to the variable under study, and sweep the identical test from monthly down to 1-hour.
+:::
 
 ### Phase 3 — a timeframe-localized effect
 
@@ -141,6 +151,26 @@ The gradient answers the question Phase 3 was built to ask: at which timeframe, 
 ### Why we call it suggestive, not proven
 
 Two disciplines temper the reading. First, the largest t-statistics occur at horizons 2 and 4, which use *overlapping* forward windows: consecutive observations are not independent, the effective sample is smaller than the nominal bar count, and the t-statistic is upward-biased as a result. The only clean, non-overlapping estimates are at horizon 1, and there the strongest value — weekly, t = 1.59 — falls short of the conventional 1.96 threshold. Second, sweeping fifteen timeframe-horizon cells invites multiple-comparison concerns; a coherent gradient across neighboring cells is more persuasive than any single starred entry, and it is the gradient, not the individual stars, that we rest on. The result is best described as a real, internally consistent pattern that does not yet meet a strict significance bar on its cleanest test.
+
+::: {.callout-note title="What the three phases actually taught me"}
+The result I can defend is narrow — flow-confirmed momentum outperforms at weekly and daily scale, and I read even that as suggestive, not proven. The larger thing I take away is about process. None of the three phases came from a new idea; each came from reading the previous phase's failure as evidence about the test rather than the world. Phase 1's rejection told me turnover was the wrong instrument. Phase 2's null told me the sample, not the signal, was empty. The discipline was resisting the easy move — keeping a clean-looking conclusion — and instead asking which specific assumption broke. That is what I mean by being wrong well: a null is only wasted if you stop at the t-statistic instead of asking why it came out that way.
+:::
+
+## What it actually took
+
+Before any of the research questions could be answered, three concrete problems had to be solved — one network, one data, one definition. Each taught a lesson that outlasts this project.
+
+::: {.callout-warning title="War story: the firewall"}
+The clean plan was to pull klines from `api.binance.com`. It was blocked by SCB's corporate security gateway — the same block I had hit in an earlier project, so I recognized the failure fast. The fix was `data-api.binance.vision`, Binance's own public data mirror, which I verified returns a schema-identical payload before trusting a single number from it. **Lesson:** infrastructure fails before your hypothesis gets a chance to; know your data source's alternate endpoints, and confirm a substitute feed is byte-for-byte comparable before building on it, rather than assuming a mirror matches.
+:::
+
+::: {.callout-warning title="War story: the LUNA blowup"}
+The weekly horizon-4 spread came back as roughly −4865% — a nonsense mean. Reading the underlying observations rather than the code found it in one bar: LUNA's May 2022 collapse to about \$0.0001 produced a single forward return of `+5,199,900%`, and one degenerate print was dragging an entire timeframe's mean. This was a data problem, not a signal problem. The fix was to winsorize forward returns to their 1st/99th percentile within each horizon before aggregating. **Lesson:** any mean return computed from price ratios in a market where assets can go to near-zero must be checked for near-zero denominators first; the bug was invisible in the code and only showed up in the numbers.
+:::
+
+::: {.callout-warning title="War story: the momentum-definition bug"}
+The momentum signal was implemented as a plain N-bar return ratio, `close / close.shift(12)`, instead of true 12 − 1 momentum, `close.shift(1) / close.shift(12) − 1`. It ran without error and produced plausible rankings — the kind of bug that hides. It surfaced in review, traced back to a miscalculated expected value in my own test, so the test was confirming the wrong behavior. Fixing it restored the one-month skip and kept Phase 3 comparable to Phase 1. **Lesson:** a test only protects you if its expected value is derived independently of the code; a wrong test is worse than none, because it certifies the error.
+:::
 
 ## Limitations
 
