@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Crowded Momentum"
+  description: "Volume-signed momentum across markets and timeframes."
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-tools: true
+    fig-width: 7
+    fig-height: 4.2
+    grid:
+      body-width: 900px
+
+execute:
+  echo: false
+  warning: false

@@ -11,3 +11,5 @@ pipeline/**/data/
 # Exception: the three small committed summaries live under data/ (force-added).
 !data/
 !data/*.parquet
+
+**/*.quarto_ipynb

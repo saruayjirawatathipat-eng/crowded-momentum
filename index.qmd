@@ -1,0 +1,24 @@
+---
+title: "Crowded, Confirmed, or Coincidental?"
+subtitle: "Volume-signed momentum across markets and timeframes — an SCB data-science internship study"
+author: "Athipat Saruayjirawat"
+date: "2026-07-23"
+jupyter: python3
+---
+
+## Phase 3 — timeframe sweep (placeholder scaffold)
+
+```{python}
+from analysis import figures
+from IPython.display import Markdown
+
+df = figures.phase3_sweep_table()
+Markdown(df.round(4).to_markdown(index=False))
+```
+
+```{python}
+#| label: fig-significance
+#| fig-cap: "t-statistic of the confirmed − divergent spread across the timeframe ladder."
+fig = figures.significance_figure()
+fig
+```
