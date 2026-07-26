@@ -3,6 +3,7 @@ title: "Crowded, Confirmed, or Coincidental?"
 subtitle: "Volume-signed momentum across markets and timeframes — an SCB data-science internship study"
 author: "Athipat Saruayjirawat"
 date: "2026-07-23"
+date-format: "MMMM YYYY"
 jupyter: python3
 ---
 
