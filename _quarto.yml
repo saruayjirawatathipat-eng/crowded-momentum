@@ -19,6 +19,7 @@ format:
     fig-height: 4.2
     grid:
       body-width: 900px
+    css: styles.css
     format-links: [pdf]
   pdf:
     toc: true
