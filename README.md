@@ -11,7 +11,7 @@ statistically indistinguishable from zero intraday (4-hour, 1-hour) — a
 suggestive, timeframe-localized pattern, not a proven effect (the cleanest
 non-overlapping test falls just short of conventional significance).
 
-**Read the write-up:** _(link added after first deploy — see Task 9)_
+**Read the write-up:** https://saruayjirawatathipat-eng.github.io/crowded-momentum/
 
 ## What this is
 
