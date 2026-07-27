@@ -1,0 +1,9 @@
+/* Let wide result tables (e.g. the 7-column Phase 3 sweep) scroll horizontally
+   inside their own box on narrow screens instead of overflowing the page. */
+.cell-output-display > table,
+.cell-output-display > .table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
